@@ -17,9 +17,10 @@
             <span>Dashboard</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('product.index') }}">
-            <i class="fas fa-box"></i>
-            <span>Product</span></a>
+            <a class="nav-link" href="{{ route('product.index', ['kategori' => 'makanan']) }}">
+                <i class="fas fa-box"></i>
+                <span>Product</span>
+            </a>
         </li>
 
         <!-- Divider -->

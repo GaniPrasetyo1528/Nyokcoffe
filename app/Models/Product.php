@@ -24,4 +24,13 @@ class Product extends Model
     public function fooddetail(){
         return $this->hasMany(FoodDetail::class);
     }
+
+    public function scopeByCategory($query, $kategori)
+    {
+        return $query->when($kategori, function ($query, $kategori) {
+            return $query->whereHas('category', function ($q) use ($kategori) {
+                $q->where('name', $kategori);
+            });
+        });
+    }
 }

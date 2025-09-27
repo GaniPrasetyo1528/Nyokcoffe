@@ -16,12 +16,19 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Product::paginate(5);
+        $kategori = $request->kategori;
+
+        $products = Product::with(['category', 'fooddetail', 'drinkdetail'])
+            ->byCategory($kategori) // pakai scope
+            ->paginate(10)
+            ->appends(['kategori' => $kategori]);
+
         return view('admin.pages.product', [
-            'title' => 'Product',
-            'products' => $data
+            'title'    => 'Product',
+            'products' => $products,
+            'kategori' => $kategori,
         ]);
     }
 
