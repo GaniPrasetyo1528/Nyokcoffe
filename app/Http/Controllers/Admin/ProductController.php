@@ -45,47 +45,54 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'category_id'   => 'required|exists:categories,id',
-            'name'          => 'required|string|max:255|unique:products,name',
-            'price'         => 'required|numeric|min:100',
-            'size'          => 'nullable|in:small,medium,large',
-            'level'         => 'nullable|integer|min:0|max:10',
-            'image'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'is_available'  => 'boolean',
+        // ✅ Validasi input utama
+        $request->validate([
+            'category_id'        => 'required|exists:categories,id',
+            'name'               => 'required|string|max:255|unique:products,name',
+            'variations'         => 'required|array|min:1',
+            'variations.*.price' => 'required|numeric|min:0',
+            'variations.*.image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // buat produk utama
+        // Ambil kategori
+        $category = Category::findOrFail($request->category_id);
+
+        // ✅ Simpan produk utama
         $product = Product::create([
-            'category_id' => $validated['category_id'],
-            'name'        => $validated['name'],
-            'slug'        => Str::slug($validated['name']),
+            'category_id' => $request->category_id,
+            'name'        => $request->name,
+            'slug'        => Str::slug($request->name),
         ]);
 
-        // upload file
-        $imagePath = $request->file('image')->store('products', 'public');
+        // ✅ Simpan variasi produk
+        foreach ($request->variations as $variation) {
+            $imagePath = null;
+            if (isset($variation['image']) && $variation['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $imagePath = $variation['image']->store('products', 'public');
+            }
 
-        // cek kategori
-        $category = Category::find($validated['category_id']);
-
-        if ($category && strtolower($category->name) === 'minuman') {
-            DrinkDetail::create([
-                'product_id'   => $product->id,
-                'is_available' => $request->has('is_available'),
-                'size'         => ucfirst($validated['size']), // simpan Small/Medium/Large
-                'price'        => $validated['price'],
-                'image'        => $imagePath,
-            ]);
-        } elseif ($category && strtolower($category->name) === 'makanan') {
-            FoodDetail::create([
-                'product_id'   => $product->id,
-                'is_available' => $request->has('is_available'),
-                'level'        => $validated['level'],
-                'price'        => $validated['price'],
-                'image'        => $imagePath,
-            ]);
+            if (strtolower($category->name) === 'makanan') {
+                // Simpan ke food_details
+                FoodDetail::create([
+                    'product_id'   => $product->id,
+                    'level'        => $variation['level'] ?? null,
+                    'price'        => $variation['price'],
+                    'image'        => $imagePath,
+                    'is_available' => isset($variation['is_available']) ? 1 : 0,
+                ]);
+            } elseif (strtolower($category->name) === 'minuman') {
+                // Simpan ke drink_details
+                DrinkDetail::create([
+                    'product_id'   => $product->id,
+                    'size'         => $variation['size'] ?? null,
+                    'price'        => $variation['price'],
+                    'image'        => $imagePath,
+                    'is_available' => isset($variation['is_available']) ? 1 : 0,
+                ]);
+            }
         }
 
         return redirect()->route('product.index')->with('success', 'Produk berhasil ditambahkan!');
@@ -142,15 +149,21 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        // kalau ada image, bisa sekalian hapus dari storage
-        if ($product->image && Storage::disk('public')->exists($product->image)) {
-            Storage::disk('public')->delete($product->image);
+        $product = Product::findOrFail($id);
+
+        // Hapus semua detail yang berhubungan dengan produk ini
+        if ($product->category->name == 'minuman') {
+            $product->drinkdetail()->delete();
+        } else {
+            $product->fooddetail()->delete();
         }
 
+        // Hapus produk utamanya
         $product->delete();
 
-        return redirect()->route('product.index')->with('success', 'Produk berhasil dihapus!');
+        return redirect()->route('product.index')->with('success', 'Produk dan semua detailnya berhasil dihapus.');
     }
+
 }

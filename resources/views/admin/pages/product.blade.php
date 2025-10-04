@@ -66,9 +66,6 @@
                                             <td rowspan="{{ count($product->drinkdetail) }}">{{ $product->name }}</td>
                                             <td rowspan="{{ count($product->drinkdetail) }}">{{ ucfirst($product->category->name) }}</td>
                                         @endif
-                                        @php
-                                            $iteration++;
-                                        @endphp
                                         <td>
                                         @if ($item->is_available == 1)
                                             <span class="badge bg-success">Available</span>
@@ -87,18 +84,27 @@
                                                 N/A
                                             @endif
                                         </td>
-                                        <td>
-                                            <a href="{{ route('product.edit', $item->id) }}" class="btn btn-warning btn-sm">
-                                                <i class="bi bi-pencil-square"></i> Edit
-                                            </a>
-                                            <form action="{{ route('product.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if ($iteration == 0)
+                                            <td rowspan="{{ count($product->drinkdetail) }}">
+                                                <a href="{{ route('product.edit', $item->id) }}" class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-pencil-square"></i> Edit
+                                                </a>
+                                                <form action="{{ route('product.destroy', $item->id) }}" 
+                                                    method="POST" 
+                                                    class="d-inline" 
+                                                    onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                                    
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                        @php
+                                            $iteration++;
+                                        @endphp
                                     </tr>
                                 @endforeach
                             @else
@@ -112,9 +118,6 @@
                                             <td rowspan="{{ count($product->fooddetail) }}">{{ $product->name }}</td>
                                             <td rowspan="{{ count($product->fooddetail) }}">{{ ucfirst($product->category->name) }}</td>
                                         @endif
-                                        @php
-                                            $iteration++;
-                                        @endphp
                                         <td>
                                         @if ($item->is_available == 1)
                                             <span class="badge bg-success">Available</span>
@@ -133,18 +136,23 @@
                                                 N/A
                                             @endif
                                         </td>
-                                        <td>
-                                            <a href="{{ route('product.edit', $item->id) }}" class="btn btn-warning btn-sm">
-                                                <i class="bi bi-pencil-square"></i> Edit
-                                            </a>
-                                            <form action="{{ route('product.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if ($iteration == 0)
+                                            <td rowspan="{{ count($product->fooddetail) }}">
+                                                <a href="{{ route('product.edit', $item->id) }}" class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-pencil-square"></i> Edit
+                                                </a>
+                                                <form action="{{ route('product.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                        @php
+                                            $iteration++;
+                                        @endphp
                                     </tr>
                                 @endforeach
                             @endif

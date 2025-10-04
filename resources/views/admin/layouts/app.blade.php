@@ -157,52 +157,6 @@
 
         });
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const categorySelect = document.getElementById("category_id");
-            const sizeWrapper = document.getElementById("sizeWrapper");
-            const sizeSelect = document.getElementById("sizeMinuman");
-            const levelWrapper = document.getElementById("levelWrapper");
-            const levelInput = document.getElementById("levelMakanan");
-
-            function toggleFields() {
-                const selectedText = categorySelect.options[categorySelect.selectedIndex]?.text.toLowerCase();
-
-                if (selectedText === "minuman") {
-                    // Tampilkan Size, sembunyikan Level
-                    sizeWrapper.style.display = "block";
-                    sizeSelect.setAttribute("required", "required");
-
-                    levelWrapper.style.display = "none";
-                    levelInput.removeAttribute("required");
-                    levelInput.value = "";
-
-                } else if (selectedText === "makanan") {
-                    // Tampilkan Level, sembunyikan Size
-                    levelWrapper.style.display = "block";
-                    levelInput.setAttribute("required", "required");
-
-                    sizeWrapper.style.display = "none";
-                    sizeSelect.removeAttribute("required");
-                    sizeSelect.value = "";
-                } else {
-                    // Jika kategori lain
-                    sizeWrapper.style.display = "none";
-                    sizeSelect.removeAttribute("required");
-                    sizeSelect.value = "";
-
-                    levelWrapper.style.display = "none";
-                    levelInput.removeAttribute("required");
-                    levelInput.value = "";
-                }
-            }
-
-            // Jalankan saat load pertama kali
-            toggleFields();
-
-            // Jalankan saat kategori berubah
-            categorySelect.addEventListener("change", toggleFields);
-        });
-    </script>
+    
 </body>
 </html>
