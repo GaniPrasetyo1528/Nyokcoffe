@@ -1,8 +1,8 @@
 node {
     checkout scm
 
-    stage("Build"){
-        docker.image('my-php-composer:8.2').inside('-u root') {
+    stage("Build") {
+        docker.image('composer:2').inside('-u root') {
             sh 'php -v'
             sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
         }
