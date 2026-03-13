@@ -1,16 +1,18 @@
 node {
     checkout scm
-    // deploy env dev
 
     stage("Build") {
-        docker.image('shippingdocker/php-composer:7.4').inside('-u root') {
-            sh 'rm composer.lock'
-            sh 'composer install'
+        docker.image('php:8.2-cli').inside {
+            sh 'apt update'
+            sh 'apt install -y unzip git'
+            sh 'curl -sS https://getcomposer.org/installer | php'
+            sh 'php composer.phar install'
         }
     }
 
-    // Testing
-    docker.image('ubuntu').inside('-u root') {
-        sh 'echo "Ini adalah test"'
+    stage("Testing") {
+        docker.image('ubuntu').inside {
+            sh 'echo "Ini adalah test"'
+        }
     }
 }
