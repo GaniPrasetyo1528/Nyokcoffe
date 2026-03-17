@@ -21,7 +21,7 @@ node {
     }
 
     stage('Testing') {
-        docker.image('ubuntu:22.04').inside('--entrypoint="" -u root') {
+        docker.image('ubuntu:24.04').inside('--entrypoint="" -u root') {
             sh '''
             echo "Ini adalah test"
             '''
