@@ -27,4 +27,21 @@ node {
             '''
         }
     }
+
+    stage('Deploy') {
+    docker.image('agung3wi/alpine-rsync:1.1').inside('--entrypoint="" -u root') {
+        sshagent(credentials: ['ssh-prod']) {
+            sh '''
+            mkdir -p ~/.ssh
+            ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts
+
+            rsync -rav --delete \
+                --exclude=.env \
+                --exclude=storage \
+                --exclude=.git \
+                ./ nixie@$PROD_HOST:/home/nixie/m6/larajenkins/
+            '''
+        }
+    }
+    }
 }
