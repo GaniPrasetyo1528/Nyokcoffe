@@ -39,7 +39,7 @@ node {
                 --exclude=.env \
                 --exclude=storage \
                 --exclude=.git \
-                ./ nixie@$PROD_HOST:/home/nixie/m6/larajenkins/
+                ./ bliganz@$PROD_HOST:/home/bliganz/jenkins-docker/
             '''
         }
     }
