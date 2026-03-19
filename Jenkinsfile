@@ -39,7 +39,7 @@ node {
                 --exclude=.env \
                 --exclude=storage \
                 --exclude=.git \
-                ./ bliganz@$PROD_HOST:/home/bliganz/jenkins-docker/
+                ./ bliganz@$PROD_HOST:/home/bliganz/Tugas_Kuliah/CICD/laravel-jenkins/
             '''
         }
     }
