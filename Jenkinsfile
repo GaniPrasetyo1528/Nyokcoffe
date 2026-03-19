@@ -28,20 +28,20 @@ node {
         }
     }
 
-    // stage('Deploy') {
-    // docker.image('agung3wi/alpine-rsync:1.1').inside('--entrypoint="" -u root') {
-    //     sshagent(credentials: ['ssh-prod']) {
-    //         sh '''
-    //         mkdir -p ~/.ssh
-    //         ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts
+    stage('Deploy') {
+    docker.image('agung3wi/alpine-rsync:1.1').inside('--entrypoint="" -u root') {
+        sshagent(credentials: ['ssh-prod']) {
+            sh '''
+            mkdir -p ~/.ssh
+            ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts
 
-    //         rsync -rav --delete \
-    //             --exclude=.env \
-    //             --exclude=storage \
-    //             --exclude=.git \
-    //             ./ bliganz@$PROD_HOST:/home/bliganz/jenkins-docker/
-    //         '''
-    //     }
-    // }
-    // }
+            rsync -rav --delete \
+                --exclude=.env \
+                --exclude=storage \
+                --exclude=.git \
+                ./ bliganz@$PROD_HOST:/home/bliganz/jenkins-docker/
+            '''
+        }
+    }
+    }
 }
